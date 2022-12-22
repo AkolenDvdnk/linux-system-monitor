@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
-#define MAX_LINES 9
-#define MAX_LEN 100
+#define MAX_LEN 8
 
-char **reader(){
-    char **arr = (char**)malloc(sizeof(char*) * MAX_LINES);
-    for (int i = 0; i < MAX_LINES; i++){
-        arr[i] = (char*)malloc(MAX_LEN);
-    }
+int *reader(){
+    int *arr = (int*)malloc(MAX_LEN * sizeof(int));
 
     FILE* fp;
 
@@ -18,25 +15,26 @@ char **reader(){
         exit(1);
     }
 
-    int line = 0;
-    while (!feof(fp) && !ferror(fp) && line < MAX_LINES){
-        if (fgets(arr[line], MAX_LEN, fp) != NULL){
-            line++;
-        }
-    }
+    fscanf(fp, "%*s %d %d %d %d %d %d %d %d", &arr[0], &arr[1], &arr[2], &arr[3], &arr[4], &arr[5], &arr[6], &arr[7]);
+
     fclose(fp);
 
     return arr;
 }
 
+
+
 int main(){
-    char **data = NULL;
-    
+    int *data = NULL;
+
     data = reader();
 
-    for (int i = 0; i < MAX_LINES; i++){
-        printf("%s", data[i]);
+    for (int i = 0; i < MAX_LEN; i++){
+        printf("%d ", data[i]);
     }
+    printf("\n");
+
+    free(data);
 
     return 0;
 }
