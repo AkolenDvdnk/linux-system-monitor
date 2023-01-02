@@ -1,42 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
-#define MAX_LINES 9
-#define MAX_LEN 100
+struct cpuusage{
+    unsigned long long idleTime;
+    unsigned long long workingTime;
+};
 
-char **reader(){
-    char **arr = (char**)malloc(sizeof(char*) * MAX_LINES);
-    for (int i = 0; i < MAX_LINES; i++){
-        arr[i] = (char*)malloc(MAX_LEN);
-    }
+struct cpustat{
+    unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
+};
 
-    FILE* fp;
+struct cpustat reader(){
+    struct cpustat r;
+    
+    FILE *fp;
 
     if ((fp = fopen("/proc/stat", "r")) == NULL){
         printf("File cannot be opened!\n");
         exit(1);
     }
 
-    int line = 0;
-    while (!feof(fp) && !ferror(fp) && line < MAX_LINES){
-        if (fgets(arr[line], MAX_LEN, fp) != NULL){
-            line++;
-        }
-    }
+    fscanf(fp, "%*s %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu", &r.user, &r.nice,
+        &r.system, &r.idle, &r.iowait, &r.irq, &r.softirq, &r.steal, &r.guest, &r.guest_nice);
+
     fclose(fp);
 
-    return arr;
+    return r;
 }
 
 int main(){
-    char **data = NULL;
-    
-    data = reader();
+    struct cpustat stats = reader();
 
-    for (int i = 0; i < MAX_LINES; i++){
-        printf("%s", data[i]);
-    }
-
-    return 0;
+    printf("%llu\n", stats.nice);
 }
