@@ -18,8 +18,8 @@ struct cpustat cpustat_reader(){
     FILE *fp;
 
     if ((fp = fopen("/proc/stat", "r")) == NULL){
-        printf("File cannot be opened!\n");
-        exit(1);
+        perror("File cannot be opened");
+        exit(EXIT_FAILURE);
     }
 
     fscanf(fp, "%*s %llu %llu %llu %llu %llu %llu %llu %llu %llu %llu", &r.user, &r.nice,
@@ -28,6 +28,19 @@ struct cpustat cpustat_reader(){
     fclose(fp);
 
     return r;
+}
+
+void file_close(FILE *fp){
+    fclose(fp);
+}
+
+void file_rewind(FILE *fp){
+    if (fp == NULL){
+        perror("Cannot rewind a file");
+        exit(EXIT_FAILURE);
+    }
+
+    rewind(fp);
 }
 
 struct cpuusage cpuusage_from_cpustat(struct cpustat s){
@@ -40,22 +53,27 @@ struct cpuusage cpuusage_from_cpustat(struct cpustat s){
     return cu;
 }
 
-long double cpuusage_analyzer(struct cpuusage cu){
-    struct cpuusage prevCU = cu;
-    sleep(1);
-    struct cpuusage currCU = cu;
+float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
+    struct cpuusage prevCU = _prevCu;
+    struct cpuusage currCU = _currCU;
     
     unsigned long long total = currCU.total - prevCU.total;
     unsigned long long idle = currCU.idle - prevCU.idle;
 
-    return (long double)(total - idle)/total;
+    return (float)(total - idle)/total * 100;
 } 
 
 int main(){
-    struct cpustat stats = cpustat_reader();
-    struct cpuusage cufcs = cpuusage_from_cpustat(stats);
+    struct cpuusage prev = {0};
+    
+    while (1){
+        struct cpustat stats = cpustat_reader();
+        struct cpuusage curr = cpuusage_from_cpustat(stats);
 
-    long double avg = cpuusage_analyzer(cufcs);
-
-    printf("%Lf\n", avg);
+        float avg = cpuusage_analyzer(prev, curr);
+        prev = curr;
+        
+        printf("%.1f%%\n", avg);
+        sleep(1);
+    }
 }
