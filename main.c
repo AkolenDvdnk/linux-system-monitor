@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 struct cpuusage{
-    unsigned long long idleTime;
-    unsigned long long workingTime;
+    unsigned long long idle;
+    unsigned long long nonIdle;
+    unsigned long long total;
 };
 
 struct cpustat{
     unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
 };
 
-struct cpustat reader(){
+struct cpustat cpustat_reader(){
     struct cpustat r;
     
     FILE *fp;
@@ -28,8 +30,32 @@ struct cpustat reader(){
     return r;
 }
 
-int main(){
-    struct cpustat stats = reader();
+struct cpuusage cpuusage_from_cpustat(struct cpustat s){
+    struct cpuusage cu;
 
-    printf("%llu\n", stats.nice);
+    cu.idle = s.idle + s.iowait;
+    cu.nonIdle = s.user + s.nice + s.system + s.irq + s.softirq + s.steal; 
+    cu.total = cu.idle + cu.nonIdle;
+
+    return cu;
+}
+
+long double cpuusage_analyzer(struct cpuusage cu){
+    struct cpuusage prevCU = cu;
+    sleep(1);
+    struct cpuusage currCU = cu;
+    
+    unsigned long long total = currCU.total - prevCU.total;
+    unsigned long long idle = currCU.idle - prevCU.idle;
+
+    return (long double)(total - idle)/total;
+} 
+
+int main(){
+    struct cpustat stats = cpustat_reader();
+    struct cpuusage cufcs = cpuusage_from_cpustat(stats);
+
+    long double avg = cpuusage_analyzer(cufcs);
+
+    printf("%Lf\n", avg);
 }
