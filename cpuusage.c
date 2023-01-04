@@ -12,7 +12,7 @@ struct cpustat{
     unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
 };
 
-struct cpustat cpustat_reader(){
+static struct cpustat cpustat_reader(){
     struct cpustat r;
     
     FILE *fp;
@@ -30,7 +30,7 @@ struct cpustat cpustat_reader(){
     return r;
 }
 
-struct cpuusage cpuusage_from_cpustat(struct cpustat s){
+static struct cpuusage cpuusage_from_cpustat(struct cpustat s){
     struct cpuusage cu;
 
     cu.idle = s.idle + s.iowait;
@@ -40,7 +40,7 @@ struct cpuusage cpuusage_from_cpustat(struct cpustat s){
     return cu;
 }
 
-float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
+static float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
     struct cpuusage prevCU = _prevCu;
     struct cpuusage currCU = _currCU;
     
@@ -50,7 +50,7 @@ float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
     return (float)(total - idle)/total * 100;
 } 
 
-void printer(){
+static void cpuusage_printer(){
     struct cpuusage prev = {0};
     
     while (1){
@@ -66,7 +66,7 @@ void printer(){
 }
 
 int main(){
-    printer();
+    cpuusage_printer();
 
     return 0;
 }
