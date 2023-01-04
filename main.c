@@ -30,19 +30,6 @@ struct cpustat cpustat_reader(){
     return r;
 }
 
-void file_close(FILE *fp){
-    fclose(fp);
-}
-
-void file_rewind(FILE *fp){
-    if (fp == NULL){
-        perror("Cannot rewind a file");
-        exit(EXIT_FAILURE);
-    }
-
-    rewind(fp);
-}
-
 struct cpuusage cpuusage_from_cpustat(struct cpustat s){
     struct cpuusage cu;
 
@@ -63,7 +50,7 @@ float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
     return (float)(total - idle)/total * 100;
 } 
 
-int main(){
+void printer(){
     struct cpuusage prev = {0};
     
     while (1){
@@ -76,4 +63,10 @@ int main(){
         printf("%.1f%%\n", avg);
         sleep(1);
     }
+}
+
+int main(){
+    printer();
+
+    return 0;
 }
