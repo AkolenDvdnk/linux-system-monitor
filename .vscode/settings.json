@@ -1,5 +1,19 @@
 {
     "files.associations": {
-        "limits.h": "c"
+        "limits.h": "c",
+        "ncurses.h": "c",
+        "cpuusage.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "cmath": "c",
+        "cstdarg": "c",
+        "cstdio": "c",
+        "cstdlib": "c",
+        "cwchar": "c",
+        "limits": "c",
+        "new": "c",
+        "*.tcc": "c",
+        "type_traits": "c",
+        "typeinfo": "c"
     }
 }

@@ -2,21 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-struct cpuusage{
-    unsigned long long idle;
-    unsigned long long nonIdle;
-    unsigned long long total;
-};
-
-struct cpustat{
-    unsigned long long user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice;
-};
+#include "../inc/cpuusage.h"
 
 static struct cpustat cpustat_reader(){
     struct cpustat r;
     
     FILE *fp;
-
+ 
     if ((fp = fopen("/proc/stat", "r")) == NULL){
         perror("File cannot be opened");
         exit(EXIT_FAILURE);
@@ -50,7 +42,7 @@ static float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU)
     return (float)(total - idle)/total * 100;
 } 
 
-static void cpuusage_printer(){
+void cpuusage_printer(){
     struct cpuusage prev = {0};
     
     while (1){
@@ -63,10 +55,4 @@ static void cpuusage_printer(){
         printf("%.1f%%\n", avg);
         sleep(1);
     }
-}
-
-int main(){
-    cpuusage_printer();
-
-    return 0;
 }
