@@ -1,4 +1,4 @@
-#include "../inc/cpuusage.h"
+#include "cpuusage.h"
 
 int main(){
     cpuusage_printer();

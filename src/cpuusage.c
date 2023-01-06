@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../inc/cpuusage.h"
+#include "cpuusage.h"
 
 static struct cpustat cpustat_reader(){
     struct cpustat r;
