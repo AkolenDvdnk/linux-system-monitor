@@ -2,8 +2,9 @@
 #include "gui.h"
 
 int main(){
-    //cpuusage_printer();
-    gui();
+    display();
+    //printf("%f", cpuusage_average());
+
     
     return 0;
 }

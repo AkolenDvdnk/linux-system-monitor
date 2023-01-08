@@ -32,27 +32,23 @@ static struct cpuusage cpuusage_from_cpustat(struct cpustat s){
     return cu;
 }
 
-static float cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
+static double cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU){
     struct cpuusage prevCU = _prevCu;
     struct cpuusage currCU = _currCU;
     
     unsigned long long total = currCU.total - prevCU.total;
     unsigned long long idle = currCU.idle - prevCU.idle;
 
-    return (float)(total - idle)/total * 100;
+    return (double)(total - idle)/total * 100;
 } 
 
-void cpuusage_printer(){
+double cpuusage_average(){
     struct cpuusage prev = {0};
     
-    while (1){
-        struct cpustat stats = cpustat_reader();
-        struct cpuusage curr = cpuusage_from_cpustat(stats);
+    struct cpustat stats = cpustat_reader();
+    struct cpuusage curr = cpuusage_from_cpustat(stats);
+    double avg = cpuusage_analyzer(prev, curr);
+    prev = curr;
 
-        float avg = cpuusage_analyzer(prev, curr);
-        prev = curr;
-        
-        printf("%.1f%%\n", avg);
-        sleep(1);
-    }
+    return avg;
 }

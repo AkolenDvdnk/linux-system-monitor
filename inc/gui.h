@@ -3,6 +3,7 @@
 
 #include <ncurses.h>
 
-void gui();
+void display();
+void displaySystem(WINDOW *win);
 
 #endif
