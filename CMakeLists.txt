@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(system_monitor)
+project(monitor)
 
-set(SOURCES
-    src/cpuusage.c
-    src/main.c
-)
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIRS})
 
-add_executable(system_monitor ${SOURCES})
+include_directories(inc)
+file(GLOB SOURCES "src/*.c")
 
-target_include_directories(system_monitor
-    PRIVATE
-        ${PROJECT_SOURCE_DIR}/inc
-)
+add_executable(monitor ${SOURCES})
+
+target_link_libraries(monitor ${CURSES_LIBRARIES})
+
+target_compile_options(monitor PRIVATE -Wall -Wextra)
