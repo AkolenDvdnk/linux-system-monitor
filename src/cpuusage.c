@@ -4,6 +4,8 @@
 
 #include "cpuusage.h"
 
+struct cpuusage prev = {0};
+
 static struct cpustat cpustat_reader(){
     struct cpustat r;
     
@@ -42,13 +44,13 @@ static double cpuusage_analyzer(struct cpuusage _prevCu, struct cpuusage _currCU
     return (double)(total - idle)/total * 100;
 } 
 
+
 double cpuusage_average(){
-    struct cpuusage prev = {0};
-    
     struct cpustat stats = cpustat_reader();
     struct cpuusage curr = cpuusage_from_cpustat(stats);
-    double avg = cpuusage_analyzer(prev, curr);
-    prev = curr;
 
+    float avg = cpuusage_analyzer(prev, curr);
+    prev = curr;
+    
     return avg;
 }
