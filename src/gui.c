@@ -1,11 +1,16 @@
-#include <stdlib.h>
 #include <unistd.h>
+#include <sys/utsname.h>
 
 #include "gui.h"
 #include "cpuusage.h"
 
 void displaySystem(WINDOW *win){
-    mvwprintw(win, 1, 2, "CPU: %.1f%%", cpuusage_average());
+    struct utsname uts;
+
+    uname(&uts);
+    
+    mvwprintw(win, 1, 2, "OS: %s", uts.sysname);
+    mvwprintw(win, 2, 2, "CPU: %.1f%%", cpuusage_average());
 }
 
 void display(){

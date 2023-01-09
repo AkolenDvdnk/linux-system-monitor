@@ -15,6 +15,7 @@
         "*.tcc": "c",
         "type_traits": "c",
         "typeinfo": "c",
-        "gui.h": "c"
+        "gui.h": "c",
+        "system.h": "c"
     }
 }

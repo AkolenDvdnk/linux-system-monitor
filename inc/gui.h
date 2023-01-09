@@ -3,7 +3,7 @@
 
 #include <ncurses.h>
 
-void display();
 void displaySystem(WINDOW *win);
+void display();
 
 #endif
